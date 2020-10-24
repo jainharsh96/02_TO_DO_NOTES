@@ -1,14 +1,17 @@
-package com.example.harsh.Notes;
+package com.example.harsh.Notes.NoteViewModels;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+import com.example.harsh.Notes.NoteDatabase.NotesDatabase;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
 
 public class CreateNoteViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private NotesDatabase notesDatabase;
     private final int notesId;
 
-    public CreateNoteViewModelFactory(NotesDatabase database, int id){
+    public CreateNoteViewModelFactory(NotesDatabase database, int id) {
         notesId = id;
         notesDatabase = database;
     }

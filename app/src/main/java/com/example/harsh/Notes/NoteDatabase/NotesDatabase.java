@@ -1,10 +1,13 @@
-package com.example.harsh.Notes;
+package com.example.harsh.Notes.NoteDatabase;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
+import com.example.harsh.Notes.NoteModels.Note;
+
 import android.content.Context;
+
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 @Database(entities = {Note.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
@@ -12,7 +15,7 @@ public abstract class NotesDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = NotesDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "Noteslist";
+    private static final String DATABASE_NAME = "NotesDb";
     private static NotesDatabase sNotesDatabase;
 
     public static NotesDatabase getInstance(Context context){

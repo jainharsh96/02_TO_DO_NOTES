@@ -1,7 +1,8 @@
 package com.example.harsh.Notes;
 
+import com.example.harsh.Notes.NoteModels.Note;
+
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.TaskViewHolder> {
     private static final String DATE_FORMAT = "dd-MM-yyy";
@@ -34,10 +37,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.TaskViewHold
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
         Note tableEntry = mNotes.get(position);
-        String body = tableEntry.getBody().trim().replace("\n", " ");
+        String body = tableEntry.getBody();
         String date = dateFormat.format(tableEntry.getDate());
         holder.rBody.setText(body);
-        holder.rTitle.setText(body);
+        holder.rTitle.setText(body.split("\n")[0]);
         holder.rDate.setText(date);
     }
 

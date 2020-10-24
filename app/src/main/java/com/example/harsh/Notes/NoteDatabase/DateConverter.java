@@ -1,7 +1,8 @@
-package com.example.harsh.Notes;
-import android.arch.persistence.room.TypeConverter;
+package com.example.harsh.Notes.NoteDatabase;
 
 import java.util.Date;
+
+import androidx.room.TypeConverter;
 
 public class DateConverter {
 

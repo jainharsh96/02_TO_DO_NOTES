@@ -1,7 +1,10 @@
-package com.example.harsh.Notes;
+package com.example.harsh.Notes.NoteViewModels;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import com.example.harsh.Notes.NoteDatabase.NotesDatabase;
+import com.example.harsh.Notes.NoteModels.Note;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 public class NoteViewModel extends ViewModel {
 

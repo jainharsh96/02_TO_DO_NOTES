@@ -2,12 +2,13 @@ package com.example.harsh.Notes;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class AppExecuter{
+import androidx.annotation.NonNull;
+
+public class AppExecuter {
     private static final Object LOCK = new Object();
     private static AppExecuter sInstance;
     private final Executor diskIO;

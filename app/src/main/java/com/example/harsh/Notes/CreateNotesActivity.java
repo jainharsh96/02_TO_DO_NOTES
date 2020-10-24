@@ -1,13 +1,13 @@
 package com.example.harsh.Notes;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import com.example.harsh.Notes.NoteDatabase.NotesDatabase;
+import com.example.harsh.Notes.NoteModels.Note;
+import com.example.harsh.Notes.NoteViewModels.CreateNoteViewModelFactory;
+import com.example.harsh.Notes.NoteViewModels.NoteViewModel;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -17,6 +17,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Date;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 public class CreateNotesActivity extends AppCompatActivity {
     public static final String KEY = "instant_key";

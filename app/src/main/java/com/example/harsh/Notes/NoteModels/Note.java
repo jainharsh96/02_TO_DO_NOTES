@@ -1,11 +1,13 @@
-package com.example.harsh.Notes;
+package com.example.harsh.Notes.NoteModels;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 @Entity(tableName = "Notes")
 public class Note {
     @PrimaryKey(autoGenerate = true)
@@ -13,6 +15,7 @@ public class Note {
     private String body;
     @ColumnInfo(name = "updated_date")
     private Date date;
+
     @Ignore
     public Note(String body, Date date) {
         this.body = body;
