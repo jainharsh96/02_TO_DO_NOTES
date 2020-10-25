@@ -19,12 +19,11 @@ import android.widget.TextView;
 import java.util.Date;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-public class CreateNotesActivity extends AppCompatActivity {
+public class CreateNotesActivity extends BaseActivity {
     public static final String KEY = "instant_key";
     private EditText mBody;
     private Button mSaveData;

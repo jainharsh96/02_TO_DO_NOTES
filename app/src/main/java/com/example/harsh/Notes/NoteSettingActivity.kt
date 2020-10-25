@@ -1,10 +1,9 @@
 package com.example.harsh.Notes
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
-class NoteSettingActivity : AppCompatActivity() {
+class NoteSettingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
