@@ -21,11 +21,16 @@ public class Note {
         this.body = body;
         this.date = date;
     }
+
     public Note(int id, String body, Date date) {
         this.id = id;
         this.body = body;
         this.date = date;
     }
+
+    public Note() {
+    }
+
     public int getId() {
         return id;
     }

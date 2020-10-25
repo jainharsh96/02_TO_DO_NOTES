@@ -55,7 +55,6 @@ public abstract class NotesDatabase extends RoomDatabase {
                         NotesDatabase.class,
                         NotesDatabase.DATABASE_NAME_PATH)
                         .openHelperFactory(getDatabaseSupportFactory())
-                        .allowMainThreadQueries()
                         .setJournalMode(JournalMode.TRUNCATE)
                     .build();
         }

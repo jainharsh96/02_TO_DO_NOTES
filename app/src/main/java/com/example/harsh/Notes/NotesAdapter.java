@@ -18,7 +18,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.TaskViewHold
     private static final String DATE_FORMAT = "dd-MM-yyy";
     final private ItemClickListener mItemClickListener;
     private List<Note> mNotes;
-    private Context mContext;
+    private final Context mContext;
     private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 
     public NotesAdapter(Context context, ItemClickListener listener) {
