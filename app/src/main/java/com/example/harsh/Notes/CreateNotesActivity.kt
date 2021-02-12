@@ -17,6 +17,7 @@ class CreateNotesActivity : BaseActivity() {
     private lateinit var mNoteViewModel: MainViewModel
     var DEFAULT_KEY = -1
     var mNoteId = DEFAULT_KEY
+    var mNote: Note? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,11 @@ class CreateNotesActivity : BaseActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         Notes_data.addTextChangedListener(textWatcher)
+        revert.setOnClickListener {
+            if (mNote != null) {
+                Notes_data.setText(mNote!!.body)
+            }
+        }
         if (intent != null) {
             mNoteId = intent.getIntExtra(NotesConstants.INTENT_NOTE_ID, DEFAULT_KEY)
         }
@@ -37,6 +43,7 @@ class CreateNotesActivity : BaseActivity() {
         mNoteViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         mNoteViewModel.note.observe(this, androidx.lifecycle.Observer {
             if (it != null) {
+                mNote = it
                 populateUI(it)
             }
         })
@@ -89,6 +96,9 @@ class CreateNotesActivity : BaseActivity() {
             } else {
                 Notes_save.isEnabled = true
                 Notes_save.setBackgroundColor(resources.getColor(R.color.colorUpdate))
+            }
+            if (mNoteId != DEFAULT_KEY) {
+                revert.visibility = View.VISIBLE
             }
         }
     }

@@ -20,6 +20,9 @@ public interface NotesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long inserEntrie(Note note);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    List<Long> insertNotes(List<Note> notes);
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     int updateEntrie(Note note);
 
@@ -28,4 +31,7 @@ public interface NotesDao {
 
     @Query("SELECT * FROM notes WHERE id = :getid")
     Note loadNotesById(int getid);
+
+    @Query("SELECT * FROM notes")
+    List<Note> getAllData();
 }

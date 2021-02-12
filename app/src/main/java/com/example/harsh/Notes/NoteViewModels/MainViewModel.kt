@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private var mNoteRepository: NoteReopsitory = NoteReopsitory(
-            NotesDatabase.getInstance(getApplication()).notesDao())
+            NotesDatabase.getInstance(application).notesDao())
 
     private var mDisposable: CompositeDisposable = CompositeDisposable()
 

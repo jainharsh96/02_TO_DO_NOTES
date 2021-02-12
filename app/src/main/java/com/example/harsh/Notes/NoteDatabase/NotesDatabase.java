@@ -20,9 +20,9 @@ public abstract class NotesDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = NotesDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "NotesDb";
+    private static final String DATABASE_NAME = "NotesDb.db";
     private static final String DATABASE_NAME_PATH =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + "/HarshNotes/NotesDb";
+            Environment.getExternalStorageDirectory().getAbsolutePath() + "/TODONotes/";
     private static final String DATABASE_PASSWORD = "thisispassword123!@#";
     private static NotesDatabase sNotesDatabase;
 
@@ -43,7 +43,7 @@ public abstract class NotesDatabase extends RoomDatabase {
     };
 
 
-    private static SupportFactory getDatabaseSupportFactory() {
+    public static SupportFactory getDatabaseSupportFactory() {
         byte[] passPhrases = SQLiteDatabase.getBytes(DATABASE_PASSWORD.toCharArray());
         return new SupportFactory(passPhrases, sSQLiteDatabaseHook);
     }
@@ -53,7 +53,7 @@ public abstract class NotesDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 sNotesDatabase = Room.databaseBuilder(context.getApplicationContext(),
                         NotesDatabase.class,
-                        NotesDatabase.DATABASE_NAME_PATH)
+                        NotesDatabase.DATABASE_NAME_PATH + DATABASE_NAME)
                         .openHelperFactory(getDatabaseSupportFactory())
                         .setJournalMode(JournalMode.TRUNCATE)
                     .build();

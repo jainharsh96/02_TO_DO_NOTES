@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.harsh.Notes.NoteModels.Note
 import com.example.harsh.Notes.NoteUtils.NotesConstants.INTENT_NOTE_ID
 import com.example.harsh.Notes.NoteViewModels.MainViewModel
 import com.example.harsh.Notes.NotesAdapter.ItemClickListener
@@ -18,6 +19,15 @@ class NotesActivity : BaseActivity(), ItemClickListener {
     private val TAG = MainActivity::class.java.simpleName
     private lateinit var notesAdapter: NotesAdapter
     private lateinit var mNoteViewModel: MainViewModel
+
+    private val notesObserver = Observer<List<Note>> {
+        notesAdapter.tasks = it
+        if (notesAdapter.itemCount == 0) {
+            empty_view_message.visibility = View.VISIBLE
+        } else {
+            empty_view_message.visibility = View.INVISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,14 +70,7 @@ class NotesActivity : BaseActivity(), ItemClickListener {
 
     private fun setupNotesViewModel() {
         mNoteViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        mNoteViewModel.notes.observe(this, Observer { taskEntries ->
-            notesAdapter.tasks = taskEntries
-            if (notesAdapter.itemCount == 0) {
-                empty_view_message.visibility = View.VISIBLE
-            } else {
-                empty_view_message.visibility = View.INVISIBLE
-            }
-        })
+        mNoteViewModel.notes.observe(this, notesObserver)
     }
 
     override fun onDestroy() {
