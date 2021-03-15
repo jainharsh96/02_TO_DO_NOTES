@@ -7,7 +7,7 @@ import io.reactivex.Observable
 
 class NoteReopsitory(private val dao: NotesDao) {
 
-    fun getAllNotes(sortBy: String) = dao.loadAllNotes()
+    fun getAllNotes(state: Int) = dao.loadAllNotes(state)
 
     fun getNote(noteId: Int): Observable<Note> = Observable.fromCallable {
         dao.loadNotesById(noteId)
@@ -34,6 +34,7 @@ class NoteReopsitory(private val dao: NotesDao) {
     fun deleteNote(note: Note) = Completable.create {
         val flag = dao.deleteEntrie(note)
         if (flag > 0) {
+            dao.insertDeletedNotes(note)
             it.onComplete()
         } else {
             it.onError(Throwable())

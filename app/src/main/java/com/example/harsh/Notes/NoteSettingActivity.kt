@@ -34,6 +34,10 @@ class NoteSettingActivity : BaseActivity() {
         restore_data.setOnClickListener {
             callIntent()
         }
+
+        drafted_Notes.setOnClickListener {
+            openDraftedNotesActivity()
+        }
     }
 
     fun callIntent() {
@@ -51,6 +55,12 @@ class NoteSettingActivity : BaseActivity() {
                 restoreTask.execute(selectedFile)
             }
         }
+    }
+
+    private fun openDraftedNotesActivity() {
+        val intent = Intent(this, DraftedNotes::class.java)
+        startActivity(intent)
+        finish()
     }
 
     inner class RestoreDataTask : AsyncTask<Any?, Any?, Any>() {

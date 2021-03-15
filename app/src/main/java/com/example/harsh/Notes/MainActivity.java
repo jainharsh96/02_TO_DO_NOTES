@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthenticationError(int errorCode,
                     @NonNull CharSequence errString) {
-                Toast.makeText(getApplicationContext(), "Authentication error",
+                Toast.makeText(getApplicationContext(), errString,
                         Toast.LENGTH_SHORT)
                         .show();
                 finish();
@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthenticationSucceeded(
                     @NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                Toast.makeText(getApplicationContext(),
-                        "Authentication succeeded!", Toast.LENGTH_SHORT).show();
                 openNotesActivity();
             }
 

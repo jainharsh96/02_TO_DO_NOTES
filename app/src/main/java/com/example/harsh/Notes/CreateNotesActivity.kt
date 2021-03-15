@@ -1,11 +1,14 @@
 package com.example.harsh.Notes
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import com.example.harsh.Notes.NoteModels.Note
 import com.example.harsh.Notes.NoteUtils.NotesConstants
@@ -33,6 +36,18 @@ class CreateNotesActivity : BaseActivity() {
                 Notes_data.setText(mNote!!.body)
             }
         }
+
+        voice_note.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                checkPermissionForAudion()
+            } else {
+                startRecognizeVoice()
+            }
+        }
+
+
         if (intent != null) {
             mNoteId = intent.getIntExtra(NotesConstants.INTENT_NOTE_ID, DEFAULT_KEY)
         }
@@ -101,5 +116,11 @@ class CreateNotesActivity : BaseActivity() {
                 revert.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onRecognizeVoiceText(texts: ArrayList<String>) {
+        val searchText = StringBuilder()
+        texts.forEach { searchText.append(it).append(" ") }
+        Notes_data.append(searchText.toString())
     }
 }

@@ -1,5 +1,6 @@
 package com.example.harsh.Notes.NoteDatabase;
 
+import com.example.harsh.Notes.NoteModels.DeletedNotes;
 import com.example.harsh.Notes.NoteModels.Note;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -9,12 +10,15 @@ import net.sqlcipher.database.SupportFactory;
 import android.content.Context;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Note.class}, version = 1, exportSchema = false)
+@Database(entities = {Note.class, DeletedNotes.class}, version = 3, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class NotesDatabase extends RoomDatabase {
 
@@ -56,6 +60,18 @@ public abstract class NotesDatabase extends RoomDatabase {
                         NotesDatabase.DATABASE_NAME_PATH + DATABASE_NAME)
                         .openHelperFactory(getDatabaseSupportFactory())
                         .setJournalMode(JournalMode.TRUNCATE)
+                        .addMigrations(new Migration(2, 3) {
+                            @Override
+                            public void migrate(@NonNull SupportSQLiteDatabase database) {
+                                database.execSQL("create table if not exists 'deleted_notes' ("
+                                        + "'id' INTEGER NOT NULL, " + "'updated_date' INTEGER , "
+                                        + "'body' TEXT, PRIMARY KEY('id'))");
+
+                                database.execSQL("ALTER TABLE Notes Add column state INTEGER "
+                                        + "default 0 NOT NULL");
+
+                            }
+                        })
                     .build();
         }
       }

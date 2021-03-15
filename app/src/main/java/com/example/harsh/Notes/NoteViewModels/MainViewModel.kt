@@ -2,7 +2,6 @@ package com.example.harsh.Notes.NoteViewModels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.harsh.Notes.NoteDatabase.NotesDatabase
 import com.example.harsh.Notes.NoteModels.Note
@@ -20,11 +19,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var note: MutableLiveData<Note> = MutableLiveData()
 
-    var notes: LiveData<List<Note>> = mNoteRepository.getAllNotes("")
+    //var notes: LiveData<List<Note>> = mNoteRepository.getAllNotes()
 
-//    fun loadNotes(sortBy: String) {
-//        mNoteRepository.getAllNotes(sortBy)
-//    }
+    fun loadNotes(state: Int) = mNoteRepository.getAllNotes(state)
 
     fun loadNote(noteId: Int) {
         mDisposable.add(mNoteRepository.getNote(noteId).subscribeOn(Schedulers.io())
@@ -42,7 +39,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun deleteNote(note: Note) {
-        mDisposable.add(mNoteRepository.deleteNote(note).subscribeOn(Schedulers.io()).observeOn
+        note.state = Note.NOTE_STATE_DRAFTED
+        mDisposable.add(mNoteRepository.updateNote(note).subscribeOn(Schedulers.io()).observeOn
         (AndroidSchedulers.mainThread()).subscribe({}, {}))
     }
 

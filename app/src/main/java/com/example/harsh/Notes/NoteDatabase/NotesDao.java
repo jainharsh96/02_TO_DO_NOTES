@@ -14,8 +14,8 @@ import androidx.room.Update;
 
 @Dao
 public interface NotesDao {
-    @Query("SELECT * FROM notes ORDER BY updated_date DESC")
-    LiveData<List<Note>> loadAllNotes();
+    @Query("SELECT * FROM notes where state = :state ORDER BY updated_date DESC")
+    LiveData<List<Note>> loadAllNotes(int state);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long inserEntrie(Note note);
@@ -32,6 +32,9 @@ public interface NotesDao {
     @Query("SELECT * FROM notes WHERE id = :getid")
     Note loadNotesById(int getid);
 
-    @Query("SELECT * FROM notes")
+    @Query("SELECT * FROM notes where state = 0")
     List<Note> getAllData();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertDeletedNotes(Note note);
 }

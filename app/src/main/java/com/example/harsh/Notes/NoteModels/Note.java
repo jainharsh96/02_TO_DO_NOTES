@@ -10,11 +10,16 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Notes")
 public class Note {
+
+    public static int NOTE_STATE_SAVED = 0;
+    public static int NOTE_STATE_DRAFTED = 1;
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String body;
     @ColumnInfo(name = "updated_date")
     private Date date;
+    private int state;
 
     @Ignore
     public Note(String body, Date date) {
@@ -53,5 +58,13 @@ public class Note {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

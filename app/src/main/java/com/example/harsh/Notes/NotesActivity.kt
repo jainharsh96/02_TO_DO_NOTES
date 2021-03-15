@@ -1,9 +1,12 @@
 package com.example.harsh.Notes
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,13 +17,19 @@ import com.example.harsh.Notes.NoteUtils.NotesConstants.INTENT_NOTE_ID
 import com.example.harsh.Notes.NoteViewModels.MainViewModel
 import com.example.harsh.Notes.NotesAdapter.ItemClickListener
 import kotlinx.android.synthetic.main.activity_notes_layout.*
+import java.util.*
 
-class NotesActivity : BaseActivity(), ItemClickListener {
-    private val TAG = MainActivity::class.java.simpleName
-    private lateinit var notesAdapter: NotesAdapter
-    private lateinit var mNoteViewModel: MainViewModel
+open class NotesActivity : BaseActivity(), ItemClickListener {
 
-    private val notesObserver = Observer<List<Note>> {
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+        const val RESULT_SPEECH = 1234
+    }
+
+    lateinit var notesAdapter: NotesAdapter
+    lateinit var mNoteViewModel: MainViewModel
+
+    val notesObserver = Observer<List<Note>> {
         notesAdapter.tasks = it
         if (notesAdapter.itemCount == 0) {
             empty_view_message.visibility = View.VISIBLE
@@ -32,7 +41,7 @@ class NotesActivity : BaseActivity(), ItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes_layout)
-
+        setupBackPressButton()
         action_settings.setOnClickListener(View.OnClickListener {
             val intent = Intent(baseContext, NoteSettingActivity::class.java)
             startActivity(intent)
@@ -43,6 +52,16 @@ class NotesActivity : BaseActivity(), ItemClickListener {
             startActivity(intent)
         }
 
+        fab_voice_note.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                checkPermissionForAudion()
+            } else {
+                startRecognizeVoice()
+            }
+        }
+
         recyclerViewTasks.layoutManager = LinearLayoutManager(this)
         notesAdapter = NotesAdapter(this, this)
         recyclerViewTasks.adapter = notesAdapter
@@ -51,7 +70,13 @@ class NotesActivity : BaseActivity(), ItemClickListener {
         setupItemTouchListener()
     }
 
-    private fun setupItemTouchListener() {
+    open fun setupBackPressButton() {
+        setSupportActionBar(toolbar1)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+    }
+
+    open fun setupItemTouchListener() {
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
@@ -62,15 +87,15 @@ class NotesActivity : BaseActivity(), ItemClickListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 mNoteViewModel.deleteNote(notesAdapter.tasks[viewHolder.adapterPosition])
-                Toast.makeText(this@NotesActivity, getString(R.string.note_deleted_msg),
+                Toast.makeText(this@NotesActivity, "Note Drafted",
                         Toast.LENGTH_LONG).show()
             }
         }).attachToRecyclerView(recyclerViewTasks)
     }
 
-    private fun setupNotesViewModel() {
+    open fun setupNotesViewModel() {
         mNoteViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        mNoteViewModel.notes.observe(this, notesObserver)
+        mNoteViewModel.loadNotes(Note.NOTE_STATE_SAVED).observe(this, notesObserver)
     }
 
     override fun onDestroy() {
@@ -82,4 +107,15 @@ class NotesActivity : BaseActivity(), ItemClickListener {
         intent.putExtra(INTENT_NOTE_ID, noteId)
         startActivity(intent)
     }
+
+    private fun saveNote(text: String) {
+        mNoteViewModel.insertNote(Note(text, Date()))
+    }
+
+    override fun onRecognizeVoiceText(texts: ArrayList<String>) {
+        val searchText = StringBuilder()
+        texts.forEach { searchText.append(it).append(" ") }
+        saveNote(searchText.toString())
+    }
+
 }

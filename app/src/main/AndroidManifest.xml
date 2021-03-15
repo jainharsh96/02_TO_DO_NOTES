@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +26,14 @@
         <activity
             android:name=".NotesActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".DraftedNotes"
+            android:launchMode="singleTop"
+            android:parentActivityName=".NotesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".CreateNotesActivity"
             android:label="Edit Notes"
