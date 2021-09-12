@@ -9,11 +9,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -21,7 +23,7 @@ import androidx.core.content.ContextCompat;
 import static com.example.harsh.Notes.NoteUtils.NotesConstants.REQUEST_CODE_APP_PERMISSION;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
     private static final String[] permissionList =
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: " );
         setContentView(R.layout.activity_main_layout);
         if (NotesUtils.Companion.checkPermissions(this, permissionList)) {
             nextTask();
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), errString,
                         Toast.LENGTH_SHORT)
                         .show();
+                openNotesActivity();
                 finish();
             }
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e(TAG, "onCreate: " )
         setContentView(R.layout.activity_notes_layout)
         setupBackPressButton()
         action_settings.setOnClickListener(View.OnClickListener {
@@ -98,10 +100,6 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
         mNoteViewModel.loadNotes(Note.NOTE_STATE_SAVED).observe(this, notesObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onItemClickListener(noteId: Int) {
         val intent = Intent(this, CreateNotesActivity::class.java)
         intent.putExtra(INTENT_NOTE_ID, noteId)
@@ -118,4 +116,49 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
         saveNote(searchText.toString())
     }
 
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.e(MainActivity.TAG, "onRestoreInstanceState: ")
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        Log.e(MainActivity.TAG, "onPostCreate: ")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.e(MainActivity.TAG, "onRestart: ")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.e(MainActivity.TAG, "onStart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e(MainActivity.TAG, "onResume: ")
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        Log.e(MainActivity.TAG, "onPostResume: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.e(MainActivity.TAG, "onStop: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e(MainActivity.TAG, "onDestroy: ")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.e(MainActivity.TAG, "onSaveInstanceState: ")
+    }
 }
