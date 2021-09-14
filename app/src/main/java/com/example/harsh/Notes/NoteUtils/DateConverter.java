@@ -1,4 +1,4 @@
-package com.example.harsh.Notes.NoteDatabase;
+package com.example.harsh.Notes.NoteUtils;
 
 import java.util.Date;
 

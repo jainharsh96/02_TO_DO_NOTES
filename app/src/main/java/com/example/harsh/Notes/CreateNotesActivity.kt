@@ -10,17 +10,17 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
-import com.example.harsh.Notes.NoteModels.Note
-import com.example.harsh.Notes.NoteUtils.NotesConstants
-import com.example.harsh.Notes.NoteViewModels.MainViewModel
+import com.example.harsh.Notes.NoteDatabase.Tables.Note
+import com.example.harsh.Notes.NoteUtils.INTENT_NOTE_ID
+import com.example.harsh.Notes.NoteViewModels.NotesViewModel
 import kotlinx.android.synthetic.main.create_notes_layout.*
 import java.util.*
 
 class CreateNotesActivity : BaseActivity() {
-    private lateinit var mNoteViewModel: MainViewModel
-    var DEFAULT_KEY = -1
-    var mNoteId = DEFAULT_KEY
-    var mNote: Note? = null
+    private val mNoteViewModel: NotesViewModel by lazy {
+        ViewModelProviders.of(this).get(NotesViewModel::class.java)
+    }
+    var noteId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,64 +32,56 @@ class CreateNotesActivity : BaseActivity() {
 
         Notes_data.addTextChangedListener(textWatcher)
         revert.setOnClickListener {
-            if (mNote != null) {
-                Notes_data.setText(mNote!!.body)
+            if (mNoteViewModel.note.value != null) {
+                Notes_data.setText(mNoteViewModel.note.value!!.body)
             }
         }
 
         voice_note.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.RECORD_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
-                checkPermissionForAudion()
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                checkPermissionForAudio()
             } else {
                 startRecognizeVoice()
             }
         }
 
-
         if (intent != null) {
-            mNoteId = intent.getIntExtra(NotesConstants.INTENT_NOTE_ID, DEFAULT_KEY)
+            noteId = intent.getIntExtra(INTENT_NOTE_ID, -1)
         }
-        initViewModel()
+        setupNoteViewModel()
     }
 
-    fun initViewModel() {
-        mNoteViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+    private fun setupNoteViewModel() {
         mNoteViewModel.note.observe(this, androidx.lifecycle.Observer {
             if (it != null) {
-                mNote = it
                 populateUI(it)
             }
         })
-        if (mNoteViewModel.note.value == null && mNoteId != DEFAULT_KEY) {
-            mNoteViewModel.loadNote(mNoteId)
+        if (noteId > 0) {
+            mNoteViewModel.fetchNote(noteId)
         }
     }
 
     fun SaveData(view: View?) {
         val body = Notes_data.text.toString()
         val date = Date()
-        val record = Note(body, date)
-        if (mNoteId == DEFAULT_KEY) {
-            mNoteViewModel.insertNote(record)
+        val newNote = Note(body, date)
+        if (noteId <= 0) {
+            mNoteViewModel.insertNote(newNote)
             finish()
         } else {
-            record.id = mNoteId
-            mNoteViewModel.updateNote(record)
+            newNote.id = noteId
+            mNoteViewModel.updateNote(newNote)
             finish()
         }
     }
 
-    fun populateUI(note: Note) {
+    private fun populateUI(note: Note) {
         Notes_data.setText(note.body)
         NoteTitle.text = getString(R.string.edit_note_title)
         hideKeyboard()
-    }
-
-    private fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(Notes_data.windowToken, 0)
     }
 
     private val textWatcher: TextWatcher = object : TextWatcher {
@@ -112,15 +104,15 @@ class CreateNotesActivity : BaseActivity() {
                 Notes_save.isEnabled = true
                 Notes_save.setBackgroundColor(resources.getColor(R.color.colorUpdate))
             }
-            if (mNoteId != DEFAULT_KEY) {
+            if (noteId > 0) {
                 revert.visibility = View.VISIBLE
             }
         }
     }
 
-    override fun onRecognizeVoiceText(texts: ArrayList<String>) {
+    override fun onRecognizeVoiceText(texts: ArrayList<String?>?) {
         val searchText = StringBuilder()
-        texts.forEach { searchText.append(it).append(" ") }
+        texts!!.forEach { searchText.append(it).append(" ") }
         Notes_data.append(searchText.toString())
     }
 }

@@ -29,7 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".DraftedNotes"
+            android:name=".DraftedNotesActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".NotesActivity"
             android:theme="@style/AppTheme.NoActionBar" />

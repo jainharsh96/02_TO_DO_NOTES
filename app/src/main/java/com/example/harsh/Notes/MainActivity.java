@@ -1,8 +1,5 @@
 package com.example.harsh.Notes;
 
-import com.example.harsh.Notes.NoteUtils.NotesConstants;
-import com.example.harsh.Notes.NoteUtils.NotesUtils;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import static com.example.harsh.Notes.NoteUtils.NotesConstants.REQUEST_CODE_APP_PERMISSION;
+import static com.example.harsh.Notes.NoteUtils.NotesConstantsKt.BIOMETRIC_CLICK_CANCEL;
+import static com.example.harsh.Notes.NoteUtils.NotesConstantsKt.REQUEST_CODE_APP_PERMISSION;
+import static com.example.harsh.Notes.NoteUtils.NotesUtilsKt.checkPermissions;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -35,10 +34,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, "onCreate: " );
+        Log.e(TAG, "onCreate: ");
         setContentView(R.layout.activity_main_layout);
-        if (NotesUtils.Companion.checkPermissions(this, permissionList)) {
-            nextTask();
+        if (checkPermissions(this, permissionList)) {
+            //todo remove this
+            openNotesActivity();
+            finish();
+            //nextTask();
         } else {
             requestPermissions(permissionList, REQUEST_CODE_APP_PERMISSION);
         }
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_APP_PERMISSION) {
             for (int i = 0; i < permissionList.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode,
-                    @NonNull CharSequence errString) {
+                                              @NonNull CharSequence errString) {
                 Toast.makeText(getApplicationContext(), errString,
                         Toast.LENGTH_SHORT)
                         .show();
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Biometric login")
                 .setSubtitle("Log in using your biometric credential")
-                .setNegativeButtonText(NotesConstants.BIOMETRIC_CLICK_CANCEL)
+                .setNegativeButtonText(BIOMETRIC_CLICK_CANCEL)
 
                 .build();
 

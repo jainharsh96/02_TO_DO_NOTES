@@ -58,7 +58,7 @@ class NoteSettingActivity : BaseActivity() {
     }
 
     private fun openDraftedNotesActivity() {
-        val intent = Intent(this, DraftedNotes::class.java)
+        val intent = Intent(this, DraftedNotesActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -81,12 +81,12 @@ class NoteSettingActivity : BaseActivity() {
                 path = absolutePath + "/" + path.split(":")[1]
                 oldDb = Room.databaseBuilder(getApplicationContext(),
                         NotesDatabase::class.java, path)
-                        .openHelperFactory(NotesDatabase.getDatabaseSupportFactory())
+                        .openHelperFactory(NotesDatabase.databaseSupportFactory)
                         .allowMainThreadQueries()
                         .setJournalMode(JournalMode.TRUNCATE)
                         .build()
-                val oldDbData = oldDb.notesDao().allData
-                NotesDatabase.getInstance(applicationContext).notesDao().insertNotes(oldDbData)
+                val oldDbData = oldDb.notesDao().getAllSavedNotes() ?: emptyList()
+                NotesDatabase.getInstance(applicationContext).notesDao().insertNotesMain(oldDbData)
             } catch (e: Exception) {
                 return RESTORE_ERROR
             } finally {
