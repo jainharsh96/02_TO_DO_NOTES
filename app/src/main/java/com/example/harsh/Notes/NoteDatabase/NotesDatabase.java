@@ -72,10 +72,11 @@ public abstract class NotesDatabase extends RoomDatabase {
 
                             }
                         })
-                    .build();
+                        .build();
+            }
         }
-      }
-      return sNotesDatabase;
+        return sNotesDatabase;
     }
+
     public abstract NotesDao notesDao();
 }
