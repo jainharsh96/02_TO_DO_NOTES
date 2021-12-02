@@ -1,6 +1,7 @@
 package com.example.harsh.Notes
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -18,6 +19,10 @@ class NoteSettingActivity : BaseActivity() {
     companion object {
         const val RESTORE_ERROR = 101
         const val RESTORE_SUCCESS = 100
+        fun startActivity(fromContext: Context){
+            val intent = Intent(fromContext, NoteSettingActivity::class.java)
+            fromContext.startActivity(intent)
+        }
     }
 
     val absolutePath: String = Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -25,11 +30,10 @@ class NoteSettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_setting)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar2)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        setSupportActionBar(toolbar2)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         restore_data.setOnClickListener {
             callIntent()
@@ -85,7 +89,7 @@ class NoteSettingActivity : BaseActivity() {
                         .allowMainThreadQueries()
                         .setJournalMode(JournalMode.TRUNCATE)
                         .build()
-                val oldDbData = oldDb.notesDao().getAllSavedNotes() ?: emptyList()
+                val oldDbData = oldDb.notesDao().fetchAllNotesSaved() ?: emptyList()
                 NotesDatabase.getInstance(applicationContext).notesDao().insertNotesMain(oldDbData)
             } catch (e: Exception) {
                 return RESTORE_ERROR

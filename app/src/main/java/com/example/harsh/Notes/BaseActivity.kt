@@ -2,6 +2,7 @@ package com.example.harsh.Notes
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -11,19 +12,22 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.os.Process
+import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.harsh.Notes.NoteDatabase.NotesDatabase
 import com.example.harsh.Notes.NoteUtils.*
 import kotlinx.android.synthetic.main.create_notes_layout.*
+import java.io.File
 import java.util.ArrayList
 
 open class BaseActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {

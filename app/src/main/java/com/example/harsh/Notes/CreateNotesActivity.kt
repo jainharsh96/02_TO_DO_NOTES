@@ -2,6 +2,7 @@ package com.example.harsh.Notes
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
@@ -17,9 +18,18 @@ import kotlinx.android.synthetic.main.create_notes_layout.*
 import java.util.*
 
 class CreateNotesActivity : BaseActivity() {
+    companion object {
+        fun startActivity(fromContext: Context, noteId : String = ""){
+            val intent = Intent(fromContext, CreateNotesActivity::class.java)
+            intent.putExtra(INTENT_NOTE_ID, noteId)
+            fromContext.startActivity(intent)
+        }
+    }
+
     private val mNoteViewModel: NotesViewModel by lazy {
         ViewModelProviders.of(this).get(NotesViewModel::class.java)
     }
+
     var noteId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +42,8 @@ class CreateNotesActivity : BaseActivity() {
 
         Notes_data.addTextChangedListener(textWatcher)
         revert.setOnClickListener {
-            if (mNoteViewModel.note.value != null) {
-                Notes_data.setText(mNoteViewModel.note.value!!.body)
-            }
+            Notes_data.setText(mNoteViewModel.note.value?.body ?: "")
+            Notes_data.setSelection(Notes_data.text.length)
         }
 
         voice_note.setOnClickListener {
@@ -46,21 +55,17 @@ class CreateNotesActivity : BaseActivity() {
                 startRecognizeVoice()
             }
         }
-
-        if (intent != null) {
-            noteId = intent.getIntExtra(INTENT_NOTE_ID, -1)
-        }
         setupNoteViewModel()
     }
 
     private fun setupNoteViewModel() {
-        mNoteViewModel.note.observe(this, androidx.lifecycle.Observer {
-            if (it != null) {
-                populateUI(it)
-            }
-        })
+        if (intent != null) {
+            noteId = intent.getIntExtra(INTENT_NOTE_ID, -1)
+        }
         if (noteId > 0) {
-            mNoteViewModel.fetchNote(noteId)
+            mNoteViewModel.fetchNote(noteId).observe(this, androidx.lifecycle.Observer {
+                populateUI(it ?: return@Observer)
+            })
         }
     }
 
@@ -79,9 +84,10 @@ class CreateNotesActivity : BaseActivity() {
     }
 
     private fun populateUI(note: Note) {
-        Notes_data.setText(note.body)
         NoteTitle.text = getString(R.string.edit_note_title)
-        hideKeyboard()
+        Notes_data.setText(note.body)
+        Notes_data.setSelection(Notes_data.text.length)
+        Notes_data.requestFocus()
     }
 
     private val textWatcher: TextWatcher = object : TextWatcher {
@@ -105,7 +111,7 @@ class CreateNotesActivity : BaseActivity() {
                 Notes_save.setBackgroundColor(resources.getColor(R.color.colorUpdate))
             }
             if (noteId > 0) {
-                revert.visibility = View.VISIBLE
+                revert.makeVisible()
             }
         }
     }

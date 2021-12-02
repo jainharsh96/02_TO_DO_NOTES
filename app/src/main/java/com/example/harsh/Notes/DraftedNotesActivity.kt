@@ -22,14 +22,14 @@ class DraftedNotesActivity : NotesActivity() {
 
     override fun setupBackPressButton() {
         setSupportActionBar(toolbar1)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     override fun onSwipeNote(note: Note) {
         mNoteViewModel.deleteNote(note)
-        showToast("Note Drafted")
+        showToast("Note Restored to original place")
     }
 
     override fun setupNotesObserver() {

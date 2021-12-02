@@ -1,6 +1,7 @@
 package com.example.harsh.Notes
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -16,12 +17,19 @@ import com.example.harsh.Notes.NoteUtils.INTENT_NOTE_ID
 import com.example.harsh.Notes.NoteViewModels.NotesViewModel
 import com.example.harsh.Notes.NotesAdapter.ItemClickListener
 import kotlinx.android.synthetic.main.activity_notes_layout.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import java.util.*
 
 open class NotesActivity : BaseActivity(), ItemClickListener {
 
     companion object {
         private val TAG = "NotesActivity"
+        fun startActivity(fromContext: Context) {
+            val intent = Intent(fromContext, NotesActivity::class.java)
+            fromContext.startActivity(intent)
+        }
     }
 
     val notesAdapter: NotesAdapter by lazy { NotesAdapter(this) }
@@ -29,7 +37,7 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
         ViewModelProviders.of(this).get(NotesViewModel::class.java)
     }
     val notesObserver = Observer<List<Note>> {
-        notesAdapter.notes = it.toMutableList()
+        notesAdapter.notes = it
         if (it.isEmpty()) {
             empty_view_message.makeVisible()
         } else {
@@ -37,19 +45,16 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes_layout)
         setupBackPressButton()
         action_settings.setOnClickListener(View.OnClickListener {
-            val intent = Intent(baseContext, NoteSettingActivity::class.java)
-            startActivity(intent)
+            NoteSettingActivity.startActivity(this)
         })
 
         fab.setOnClickListener {
-            val intent = Intent(this, CreateNotesActivity::class.java)
-            startActivity(intent)
+            CreateNotesActivity.startActivity(this)
         }
 
         fab_voice_note.setOnClickListener {
@@ -67,8 +72,8 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
 
     open fun setupBackPressButton() {
         setSupportActionBar(toolbar1)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     private fun setupNotesRecyclerView() {
@@ -78,7 +83,6 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
-
             override fun onMove(
                 recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
@@ -98,13 +102,11 @@ open class NotesActivity : BaseActivity(), ItemClickListener {
 
     open fun onSwipeNote(note: Note) {
         mNoteViewModel.deleteNote(note)
-        showToast("Note Drafted")
+        showToast("Note Saved in draft state")
     }
 
     override fun onItemClickListener(noteId: Int) {
-        val intent = Intent(this, CreateNotesActivity::class.java)
-        intent.putExtra(INTENT_NOTE_ID, noteId)
-        startActivity(intent)
+        CreateNotesActivity.startActivity(this)
     }
 
     private fun saveNote(text: String) {

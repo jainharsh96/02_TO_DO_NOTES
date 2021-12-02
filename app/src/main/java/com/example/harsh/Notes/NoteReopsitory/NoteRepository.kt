@@ -2,8 +2,6 @@ package com.example.harsh.Notes.NoteReopsitory
 
 import com.example.harsh.Notes.NoteDatabase.NotesDao
 import com.example.harsh.Notes.NoteDatabase.Tables.Note
-import io.reactivex.Completable
-import io.reactivex.Observable
 
 class NoteRepository(private val localDbClient: NotesDao) {
 
@@ -32,7 +30,7 @@ class NoteRepository(private val localDbClient: NotesDao) {
     suspend fun deleteNote(note: Note) {
         val flag = localDbClient.deleteNote(note)
         if (flag > 0) {
-            localDbClient.insertDeletedNotes(note)
+            localDbClient.draftDeletedNotes(note)
             // it.onComplete()
         } else {
             // it.onError(Throwable())

@@ -22,14 +22,14 @@ interface NotesDao {
     @Delete
     suspend fun deleteNote(note: Note): Int
 
-    @Query("SELECT * FROM notes WHERE id = :getid")
-    suspend fun findNoteById(getid: Int): Note?
+    @Query("SELECT * FROM notes WHERE id = :id")
+    suspend fun findNoteById(id: Int): Note?
 
     @Query("SELECT * FROM notes where state = 0")
-    fun getAllSavedNotes(): List<Note>?
+    fun fetchAllNotesSaved(): List<Note>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDeletedNotes(note: Note): Long
+    suspend fun draftDeletedNotes(note: Note): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNotesMain(notes: List<Note>): List<Long>?

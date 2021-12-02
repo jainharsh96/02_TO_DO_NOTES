@@ -17,16 +17,19 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
     private val _note: MutableLiveData<Note> by lazy { MutableLiveData() }
     val note: LiveData<Note> = _note
 
+    var noteId = -1
+
     val savedNotes: LiveData<List<Note>> = notesRepository.fetchAllNotes(Note.NOTE_STATE_SAVED)
 
     val draftedNotes: LiveData<List<Note>> = liveData(Dispatchers.IO) {
         notesRepository.fetchAllNotes(Note.NOTE_STATE_DRAFTED)
     }
 
-    fun fetchNote(noteId: Int) {
+    fun fetchNote(noteId: Int) : LiveData<Note> {
         viewModelScope.launch(Dispatchers.IO) {
             _note.postValue(notesRepository.fetchNote(noteId))
         }
+        return note
     }
 
     //todo handle error, if write failed
